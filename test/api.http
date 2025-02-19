@@ -11,3 +11,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/assets
+
+###
+
+GET http://localhost:3000/assets/AMZN1

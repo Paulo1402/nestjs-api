@@ -6,17 +6,17 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AssetsService {
-  constructor(@InjectModel(Asset.name) private assetSchma: Model<Asset>) {}
+  constructor(@InjectModel(Asset.name) private assetSchema: Model<Asset>) {}
 
   create(createAssetDto: CreateAssetDto) {
-    return 'This action adds a new asset';
+    return this.assetSchema.create(createAssetDto);
   }
 
   findAll() {
-    return `This action returns all assets`;
+    return this.assetSchema.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} asset`;
+  findOne(symbol: string) {
+    return this.assetSchema.findOne({ symbol }).exec();
   }
 }

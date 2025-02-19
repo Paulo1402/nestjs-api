@@ -1,7 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
 
 @Controller('assets')
 export class AssetsController {
@@ -13,12 +19,18 @@ export class AssetsController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.assetsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.assetsService.findOne(+id);
+  @Get(':symbol')
+  async findOne(@Param('symbol') symbol: string) {
+    const asset = await this.assetsService.findOne(symbol);
+
+    if (!asset) {
+      throw new NotFoundException('Asset not found');
+    }
+
+    return asset;
   }
 }
