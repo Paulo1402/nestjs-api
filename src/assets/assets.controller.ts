@@ -8,19 +8,22 @@ import {
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
+import { AssetPresenter } from './asset.presenter';
 
 @Controller('assets')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Post()
-  create(@Body() createAssetDto: CreateAssetDto) {
-    return this.assetsService.create(createAssetDto);
+  async create(@Body() createAssetDto: CreateAssetDto) {
+    const asset = await this.assetsService.create(createAssetDto);
+    return new AssetPresenter(asset);
   }
 
   @Get()
   async findAll() {
-    return this.assetsService.findAll();
+    const assets = await this.assetsService.findAll();
+    return assets.map((asset) => new AssetPresenter(asset));
   }
 
   @Get(':symbol')
@@ -31,6 +34,6 @@ export class AssetsController {
       throw new NotFoundException('Asset not found');
     }
 
-    return asset;
+    return new AssetPresenter(asset);
   }
 }
