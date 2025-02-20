@@ -45,6 +45,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Serving assets images
+
+```
+npx serve -l tcp://127.0.0.1:9000 ./assets
+```
+
 ## Test
 
 ```bash

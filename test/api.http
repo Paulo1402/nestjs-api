@@ -4,10 +4,10 @@ POST http://localhost:3000/assets
 Content-Type: application/json
 
 {
-    "name": "Amazon",
-    "symbol": "AMZN",
-    "price": 100,
-    "image": "amzn.png"
+    "name": "Meta",
+    "symbol": "META",
+    "price": 56,
+    "image": "META.png"
 }
 
 ###
