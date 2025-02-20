@@ -1,6 +1,6 @@
 import { AssetPresenter } from '../assets/asset.presenter';
 import { Asset } from '../assets/entities/asset.entity';
-import { Order } from '../orders/entities/order.entity';
+import { Order } from './entities/order.entity';
 
 export class OrderPresenter {
   constructor(private order: Order & { asset: Asset }) {}

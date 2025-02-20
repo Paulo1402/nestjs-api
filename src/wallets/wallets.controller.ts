@@ -32,7 +32,7 @@ export class WalletsController {
       throw new NotFoundException('Wallet not found');
     }
 
-    return new WalletPresenter(wallet as any);
+    return new WalletPresenter(wallet);
   }
 
   @Post(':id/assets')

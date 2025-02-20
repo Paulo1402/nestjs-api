@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { OrderPresenter } from './order.presentation';
+import { OrderPresenter } from './order.presenter';
 
 @Controller('orders')
 export class OrdersController {
@@ -17,7 +17,7 @@ export class OrdersController {
     const orders = await this.ordersService.findAll({
       walletId,
     });
-    return orders.map((order) => new OrderPresenter(order as any));
+    return orders.map((order) => new OrderPresenter(order));
   }
 
   @Get(':id')
