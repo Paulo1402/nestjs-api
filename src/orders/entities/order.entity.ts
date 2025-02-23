@@ -46,7 +46,7 @@ export class Order {
   status: OrderStatus;
 
   @Prop({ type: [mongoose.Schema.Types.String], ref: Trade.name })
-  trade: Trade[] | string[];
+  trades: Trade[] | string[];
 
   createdAt!: Date;
   updatedAt!: Date;

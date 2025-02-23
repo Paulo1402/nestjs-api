@@ -16,6 +16,7 @@ import {
   WalletAsset,
   WalletAssetSchema,
 } from 'src/wallets/entities/wallet-asset.entity';
+import * as kafkaLib from '@confluentinc/kafka-javascript';
 
 @Module({
   imports: [
@@ -47,6 +48,18 @@ import {
     ]),
   ],
   controllers: [OrdersController, OrderConsumer],
-  providers: [OrdersService, OrdersGateway],
+  providers: [
+    OrdersService,
+    OrdersGateway,
+    {
+      provide: kafkaLib.KafkaJS.Kafka,
+      useFactory() {
+        return new kafkaLib.KafkaJS.Kafka({
+          'bootstrap.servers': 'localhost:9094',
+        });
+      },
+    },
+  ],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

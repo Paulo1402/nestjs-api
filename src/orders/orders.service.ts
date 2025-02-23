@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import {
@@ -14,9 +14,12 @@ import { Wallet, WalletDocument } from 'src/wallets/entities/wallet.entity';
 import { AssetDaily } from 'src/assets/entities/asset-daily.entity';
 import { WalletAsset } from 'src/wallets/entities/wallet-asset.entity';
 import { Trade } from './entities/trade.entity';
+import * as kafkaLib from '@confluentinc/kafka-javascript';
 
 @Injectable()
-export class OrdersService {
+export class OrdersService implements OnModuleInit {
+  private kafkaProducer: kafkaLib.KafkaJS.Producer;
+
   constructor(
     @InjectModel(Order.name) private orderSchema: Model<Order>,
     @InjectConnection() private connection: mongoose.Connection,
@@ -26,17 +29,43 @@ export class OrdersService {
     private walletAssetSchema: Model<WalletAsset>,
     @InjectModel(Wallet.name) private walletSchema: Model<Wallet>,
     @InjectModel(Trade.name) private tradeSchema: Model<Trade>,
+    private kafkaInst: kafkaLib.KafkaJS.Kafka,
   ) {}
 
-  create(createOrderDto: CreateOrderDto) {
-    return this.orderSchema.create({
+  async onModuleInit() {
+    this.kafkaProducer = this.kafkaInst.producer();
+    await this.kafkaProducer.connect();
+  }
+
+  async create(createOrderDto: CreateOrderDto) {
+    const order = await this.orderSchema.create({
       wallet: createOrderDto.walletId,
       asset: createOrderDto.assetId,
       shares: createOrderDto.shares,
       partial: createOrderDto.shares,
+      price: createOrderDto.price,
       type: createOrderDto.type,
       status: OrderStatus.PENDING,
     });
+
+    await this.kafkaProducer.send({
+      topic: 'orders',
+      messages: [
+        {
+          key: order._id,
+          value: JSON.stringify({
+            order_id: order._id,
+            investor_id: order.wallet,
+            asset_id: order.asset,
+            shares: order.shares,
+            price: order.price,
+            order_type: order.type,
+          }),
+        },
+      ],
+    });
+
+    return order;
   }
 
   findAll(filter: { walletId: string }) {
@@ -74,6 +103,9 @@ export class OrdersService {
         { session },
       );
       const trade = tradeDocs[0];
+
+      console.log(trade);
+      console.log(order);
 
       order.partial -= dto.shares;
       order.status = dto.status;

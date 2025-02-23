@@ -23,6 +23,7 @@ export class AssetsGateway implements OnGatewayInit {
 
   afterInit(server: Server) {
     this.assetsService.subscribeNewPriceChangedEvents().subscribe((asset) => {
+      console.log(asset);
       server
         .to(asset.symbol)
         .emit('assets/priceChanged', new AssetPresenter(asset).toJSON());
