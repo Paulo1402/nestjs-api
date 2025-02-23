@@ -11,6 +11,7 @@ export type AssetDocument = HydratedDocument<Asset>;
       enabled: true,
     },
   },
+  optimisticConcurrency: true,
 })
 export class Asset {
   @Prop({ default: () => crypto.randomUUID() })
@@ -26,7 +27,7 @@ export class Asset {
   image: string;
 
   @Prop()
-  price: string;
+  price: number;
 
   createdAt!: Date;
   updatedAt!: Date;

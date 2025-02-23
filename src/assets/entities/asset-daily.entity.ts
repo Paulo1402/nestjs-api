@@ -17,7 +17,7 @@ export class AssetDaily {
   date: Date;
 
   @Prop()
-  price: string;
+  price: number;
 
   createdAt!: Date;
   updatedAt!: Date;

@@ -17,12 +17,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "serve:images": "npx serve -l tcp://127.0.0.1:9000 ./assets"
   },
   "dependencies": {
+    "@confluentinc/kafka-javascript": "^1.2.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^10.4.15",
     "@nestjs/mongoose": "^11.0.1",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.4.15",
